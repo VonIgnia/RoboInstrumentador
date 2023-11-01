@@ -40,6 +40,33 @@ def connect():
     client.connect(broker, port)
     return client
 
+def publish_PCstatus(client):
+    while True:
+        topic = "iot/pc_monitor/macbook/system_info"
+        battery = psutil.sensors_battery()
+        memory = psutil.virtual_memory()
+
+        message_json = json.dumps({
+                "time": int(time.time()),
+                "hostname": "notebook_leonardo",
+                "cpu": psutil.cpu_percent(),
+                "cpu_count": psutil.cpu_count(), 
+                "battery": battery.percent,
+                "power": battery.power_plugged,
+                "memory": str( math.floor( memory.total / 1024 / 1000000 ) ) + "GB"
+            })
+
+        result = client.publish(topic, message_json,0)
+
+        print(message_json)
+        if result[0] == 0:
+            print(f"Message Sent to topic `{topic}`")
+        else:
+            print(f"Failed to send message to topic {topic}")
+
+        time.sleep(1)
+        
+        
 def publish(client):
     while True:
         topic = "iot/pc_monitor/macbook/system_info"
@@ -69,7 +96,7 @@ def publish(client):
 def run():
     client = connect()
     client.loop_start()
-    publish(client)
+    publish_PCstatus(client)
     client.loop_forever()
 
 run()
