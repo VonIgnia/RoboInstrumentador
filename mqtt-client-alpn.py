@@ -7,9 +7,9 @@ port = 443
 topic = "sala/terreo/temperaturaaaa"
 client_id = f'aula-6-Giovanni'
 
-ca = "mqtt/certs/AmazonRootCA1.pem" 
-cert = "mqtt/certs/6f963f6ec45fbc59ebb98cf9df943424944b334aec0a18ce0f2e7f5d256530c9-certificate.pem.crt"
-private = "mqtt/certs/6f963f6ec45fbc59ebb98cf9df943424944b334aec0a18ce0f2e7f5d256530c9-private.pem.key"
+ca = "certs/AmazonRootCA1.pem" 
+cert = "certs/6f963f6ec45fbc59ebb98cf9df943424944b334aec0a18ce0f2e7f5d256530c9-certificate.pem.crt"
+private = "certs/6f963f6ec45fbc59ebb98cf9df943424944b334aec0a18ce0f2e7f5d256530c9-private.pem.key"
 
 def ssl_alpn():
     try:
