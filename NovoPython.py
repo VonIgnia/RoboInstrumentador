@@ -15,26 +15,17 @@ from random import uniform
 
 #############################################################################################
 dicionario_gaveta = {'tesoura':1, 'bisturi':2, 'seringa':3, 'agulha':4, 'gaze':5, 'pinca':6}
-dicionario_numero = {'tesoura':0, 'bisturi':0, 'seringa':0, 'agulha':0, 'gaze':0, 'pinca':0}
+lista_ferramentas = []
 
 inicio_nome = 1
 while inicio_nome:
     primeira_fer = input('Qual ferramenta voce deseja? Digite em letra minuscula:')
     if primeira_fer in dicionario_gaveta:
+        lista_ferramentas.append(primeira_fer)
         inicio_nome = 0
     else:
         print('Desculpe, essa ferramenta nao esta disponivel')
-'''
-inicio_quant = 1
-while inicio_quant:
-    primeira_quant = input('Quantas ferramenta voce deseja?: Digite numeros, (nao usar virgula):')
-    if float(primeira_quant).is_integer():
 
-        dicionario_numero[primeira_fer] = primeira_quant
-        inicio_quant = 0
-    else:
-        print('Desculpe, esse numero nao e aceitavel')
-'''
 continua_pergunta = 1
 while continua_pergunta:
     resposta =input('Deseja algo mais? (s/n):')
@@ -42,30 +33,39 @@ while continua_pergunta:
         continua_pergunta = 0
     else:
         ferramenta = input('O que voce deseja?:')
-        
-        continua_quant = 1
         if ferramenta in dicionario_gaveta:
-            '''
-            while continua_quant:
-                quant = input('Quantas ferramenta voce deseja?: Digite numeros, (nao usar virgula):')
-                if float(quant).is_integer():
-                    #indice = list(dicionario_gaveta.keys()).index(ferramenta)
-                    dicionario_numero[ferramenta] = quant 
-                    continua_quant = 0
-                else:
-                    print('Desculpe, esse numero nao e aceitavel')
-        '''
-
+            lista_ferramentas.append(ferramenta) 
         else:
             print('Desculpe, esa ferramenta nao esta disponivel')
 
+def chave_personalizada(item):
+    return dicionario_gaveta[item]
 
-print(dicionario_numero)
+lista_organizada = sorted(lista_ferramentas, key=chave_personalizada)
+lista_envio = [dicionario_gaveta[chave] for chave in lista_organizada]
+
+print(lista_envio)
 
 ################################################################################################
 
-'''
+class ListaModbus:
+    def __init__(self,lista):
+        self.lista = lista
+        self.posição = 0
 
+    def obter_proximo_valor(self, sinal_modbus):
+        if sinal_modbus == 1:
+            if self.posicao_atual < len(self.lista):
+                valor_atual = self.lista[self.posicao_atual]
+                self.posicao_atual +=1
+                return valor_atual
+            else:
+                return 7
+        else:
+            return None
+
+modbus_handler = ListaModbus(lista_envio)
+#
 #Create an instance of ModbusServer
 HOST_ADDRESS = '10.103.16.12' #'localhost' 
 HOST_PORT = 502
@@ -77,25 +77,27 @@ try:
     print('Server is online')
 
     while True:
-        #print("Its True")
+        DATA_RECEIVED = server.data_bank.get_holding_registers(0)
+        DATA_SENT = modbus_handler.obter_proximo_valor(DATA_RECEIVED)
+
         #Envia lista de zeros para os 6 registradores
-        DATA_SENT = [dicionario_numero['tesoura']]
-        server.data_bank.set_input_registers(128, DATA_SENT)
-        DATA_SENT = [dicionario_numero['bisturi']]
-        server.data_bank.set_input_registers(129, DATA_SENT)
-        DATA_SENT = [dicionario_numero['seringa']]
-        server.data_bank.set_input_registers(130, DATA_SENT)
-        DATA_SENT = [dicionario_numero['agulha']]
-        server.data_bank.set_input_registers(131, DATA_SENT)
-        DATA_SENT = [dicionario_numero['gaze']]
-        server.data_bank.set_input_registers(132, DATA_SENT)
-        DATA_SENT = [dicionario_numero['pinca']]
-        server.data_bank.set_input_registers(133, DATA_SENT)
+        #DATA_SENT = [dicionario_numero['tesoura']]
+        #server.data_bank.set_input_registers(128, DATA_SENT)
+        #DATA_SENT = [dicionario_numero['bisturi']]
+        #server.data_bank.set_input_registers(129, DATA_SENT)
+        #DATA_SENT = [dicionario_numero['seringa']]
+        #server.data_bank.set_input_registers(130, DATA_SENT)
+        #DATA_SENT = [dicionario_numero['agulha']]
+        #server.data_bank.set_input_registers(131, DATA_SENT)
+        #DATA_SENT = [dicionario_numero['gaze']]
+        #server.data_bank.set_input_registers(132, DATA_SENT)
+        #DATA_SENT = [dicionario_numero['pinca']]
+        #server.data_bank.set_input_registers(133, DATA_SENT)
     
         #DATA_RECEIVED = server.data_bank.get_holding_registers(0)
         #server.data_bank.set_input_registers(0, DATA_SENT)
         print('Data sent:', DATA_SENT)
-        #print('Data received:', DATA_RECEIVED)
+        print('Data received:', DATA_RECEIVED)
         sleep(0.5)
 
 except Exception as e:
@@ -103,4 +105,4 @@ except Exception as e:
     print('Shutting down server...')
     server.stop()
     print('Server is offline')
-    '''
+#
