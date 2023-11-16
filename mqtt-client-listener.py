@@ -4,7 +4,7 @@ import paho.mqtt.client as mqtt_client
 
 broker = "aspvpxjmfalxx-ats.iot.us-east-1.amazonaws.com"
 port = 443
-topic = "sala/terreo/temperatura"
+topic = "gi/mandando/dados"
 client_id = f'aula-6-Giovanni'
 
 ca = "certs/AmazonRootCA1.pem" 
